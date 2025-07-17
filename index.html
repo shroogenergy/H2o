@@ -2,89 +2,145 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hydrogen Smart Calculator</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #e6f3ff, #ffffff);
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #dff3ff, #ffffff);
       text-align: center;
       padding: 40px;
     }
     h1 {
       color: #0073e6;
+      margin-bottom: 20px;
     }
-    .input-container {
-      margin: 20px auto;
-      max-width: 400px;
-      background: #fff;
-      padding: 30px;
+    .tabs button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tabs button:hover {
+      background-color: #005bb5;
+    }
+    .calculator {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      background-color: white;
       border-radius: 10px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
     input {
       width: 80%;
       padding: 10px;
       margin: 10px 0;
-      font-size: 16px;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #0073e6;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
+    button.calculate {
+      background-color: #28a745;
+      margin-top: 10px;
     }
-    #result {
+    p.result {
       font-size: 18px;
-      color: #0073e6;
       margin-top: 20px;
-    }
-    .footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #888;
+      color: #0073e6;
     }
     img {
-      margin-top: 20px;
       max-width: 300px;
+      margin-top: 30px;
+    }
+    .footer {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <h1>Hydrogen Smart Calculator</h1>
 
-  <div class="input-container">
-    <label>Electricity (kWh):</label><br>
-    <input type="number" id="electricity" placeholder="e.g. 50"><br>
+<h1>Hydrogen Smart Calculator</h1>
 
-    <label>Electrolyzer Efficiency (%):</label><br>
-    <input type="number" id="efficiency" value="70"><br>
+<div class="tabs">
+  <button onclick="showCalculator('prod')">Hydrogen Production</button>
+  <button onclick="showCalculator('eff')">Electrolyzer Efficiency</button>
+  <button onclick="showCalculator('cost')">Energy Cost</button>
+</div>
 
-    <button onclick="calculateHydrogen()">Calculate</button>
+<!-- Hydrogen Production Calculator -->
+<div id="prod" class="calculator">
+  <h2>Hydrogen Production</h2>
+  <input type="number" id="electricity" placeholder="Electricity (kWh)">
+  <input type="number" id="efficiency1" value="70" placeholder="Efficiency (%)">
+  <button class="calculate" onclick="calculateProduction()">Calculate</button>
+  <p id="result1" class="result"></p>
+</div>
 
-    <p id="result"></p>
+<!-- Electrolyzer Efficiency Calculator -->
+<div id="eff" class="calculator">
+  <h2>Electrolyzer Efficiency</h2>
+  <input type="number" id="hydrogenKg" placeholder="Hydrogen produced (kg)">
+  <input type="number" id="electricityUsed" placeholder="Electricity used (kWh)">
+  <button class="calculate" onclick="calculateEfficiency()">Calculate</button>
+  <p id="result2" class="result"></p>
+</div>
 
-    <img src="hydrogen.png" alt="Hydrogen Electrolyzer">
-  </div>
+<!-- Energy Cost Calculator -->
+<div id="cost" class="calculator">
+  <h2>Energy Cost per kg H₂</h2>
+  <input type="number" id="costPerKwh" placeholder="Cost per kWh (SAR)">
+  <input type="number" id="efficiency3" value="70" placeholder="Efficiency (%)">
+  <button class="calculate" onclick="calculateCost()">Calculate</button>
+  <p id="result3" class="result"></p>
+</div>
 
-  <div class="footer">by Shroog Taher © 2025</div>
+<!-- Optional Image -->
+<img src="hydrogen.png" alt="Hydrogen Electrolyzer Image">
 
-  <script>
-    function calculateHydrogen() {
-      const electricity = parseFloat(document.getElementById('electricity').value);
-      const efficiency = parseFloat(document.getElementById('efficiency').value) / 100;
+<div class="footer">by Shroog Taher © 2025</div>
 
-      if (isNaN(electricity) || isNaN(efficiency) || efficiency <= 0) {
-        document.getElementById('result').innerHTML = "Please enter valid values.";
-        return;
-      }
+<script>
+  function showCalculator(id) {
+    document.querySelectorAll('.calculator').forEach(div => {
+      div.style.display = 'none';
+    });
+    document.getElementById(id).style.display = 'block';
+  }
 
-      const hydrogenKg = (electricity * 3.6) / (efficiency * 33.6);
-      document.getElementById('result').innerHTML = `Estimated Hydrogen: ${hydrogenKg.toFixed(3)} kg`;
-    }
-  </script>
+  function calculateProduction() {
+    const electricity = parseFloat(document.getElementById('electricity').value);
+    const efficiency = parseFloat(document.getElementById('efficiency1').value) / 100;
+    if (!electricity || !efficiency) return;
+    const hydrogenKg = (electricity * 3.6) / (efficiency * 33.6);
+    document.getElementById('result1').innerText = `Estimated Hydrogen: ${hydrogenKg.toFixed(3)} kg`;
+  }
+
+  function calculateEfficiency() {
+    const h2 = parseFloat(document.getElementById('hydrogenKg').value);
+    const elec = parseFloat(document.getElementById('electricityUsed').value);
+    if (!h2 || !elec) return;
+    const efficiency = ((h2 * 33.6) / (elec * 3.6)) * 100;
+    document.getElementById('result2').innerText = `Efficiency: ${efficiency.toFixed(2)} %`;
+  }
+
+  function calculateCost() {
+    const cost = parseFloat(document.getElementById('costPerKwh').value);
+    const efficiency = parseFloat(document.getElementById('efficiency3').value) / 100;
+    if (!cost || !efficiency) return;
+    const electricityNeeded = (33.6 / 3.6) / efficiency; // per 1 kg
+    const costPerKg = electricityNeeded * cost;
+    document.getElementById('result3').innerText = `Estimated Cost: ${costPerKg.toFixed(2)} SAR/kg`;
+  }
+
+  // Show default tab
+  showCalculator('prod');
+</script>
+
 </body>
 </html>
