@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hydrogen Smart Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: linear-gradient(to right, #f0f9ff, #cbebff);
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007BFF;
+    }
+
+    .tab-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .tab-buttons button {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .tab-buttons button.active {
+      background-color: #0056b3;
+    }
+
+    .tab {
+      display: none;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .tab input[type="number"] {
+      padding: 8px;
+      width: 120px;
+      margin: 5px;
+    }
+
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #007BFF;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Hydrogen Smart Calculator</h1>
+
+  <div class="tab-buttons">
+    <button onclick="showTab('prod')" class="active">Hydrogen Production</button>
+    <button onclick="showTab('eff')">Electrolyzer Efficiency</button>
+    <button onclick="showTab('cost')">Energy Cost</button>
+  </div>
+
+  <div id="prod" class="tab" style="display: block;">
+    <h2>Hydrogen Production</h2>
+    <p>Electricity (kWh): <input type="number" id="elec_kwh" /></p>
+    <button onclick="calculateProduction()">Calculate</button>
+    <p class="result" id="result_prod"></p>
+  </div>
+
+  <div id="eff" class="tab">
+    <h2>Electrolyzer Efficiency</h2>
+    <p>Hydrogen Output (kg): <input type="number" id="h2_output" /></p>
+    <p>Electricity Input (kWh): <input type="number" id="electricity_input" /></p>
+    <button onclick="calculateEfficiency()">Calculate</button>
+    <p class="result" id="result_eff"></p>
+  </div>
+
+  <div id="cost" class="tab">
+    <h2>Energy Cost Estimation</h2>
+    <p>Electricity Cost (per kWh): <input type="number" id="cost_kwh" /></p>
+    <p>Electricity Used (kWh): <input type="number" id="used_kwh" /></p>
+    <button onclick="calculateCost()">Calculate</button>
+    <p class="result" id="result_cost"></p>
+  </div>
+
+  <script>
+    function showTab(tabId) {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => tab.style.display = 'none');
+      document.getElementById(tabId).style.display = 'block';
+
+      const buttons = document.querySelectorAll('.tab-buttons button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function calculateProduction() {
+      const elec_kwh = parseFloat(document.getElementById("elec_kwh").value);
+      if (!isNaN(elec_kwh)) {
+        const h2_kg = (elec_kwh / 50).toFixed(3); // approx. 50 kWh/kg H2
+        document.getElementById("result_prod").innerText = `Estimated Hydrogen: ${h2_kg} kg`;
+      }
+    }
+
+    function calculateEfficiency() {
+      const h2 = parseFloat(document.getElementById("h2_output").value);
+      const elec = parseFloat(document.getElementById("electricity_input").value);
+      if (!isNaN(h2) && !isNaN(elec) && elec !== 0) {
+        const eff = ((h2 * 33.33) / elec * 100).toFixed(2); // LHV of H2 = 33.33 kWh/kg
+        document.getElementById("result_eff").innerText = `Efficiency: ${eff}%`;
+      }
+    }
+
+    function calculateCost() {
+      const cost_per_kwh = parseFloat(document.getElementById("cost_kwh").value);
+      const used_kwh = parseFloat(document.getElementById("used_kwh").value);
+      if (!isNaN(cost_per_kwh) && !isNaN(used_kwh)) {
+        const total = (cost_per_kwh * used_kwh).toFixed(2);
+        document.getElementById("result_cost").innerText = `Estimated Cost: $${total}`;
+      }
+    }
+  </script>
+
+</body>
+</html>
