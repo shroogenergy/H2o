@@ -1,63 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hydrogen Smart Calculator</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #dff3ff, #ffffff);
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+      margin: 0;
+      padding: 0;
       text-align: center;
-      padding: 40px;
     }
     h1 {
-      color: #0073e6;
-      margin-bottom: 20px;
+      color: #0077cc;
+      margin-top: 30px;
     }
     .tabs button {
-      margin: 5px;
       padding: 10px 20px;
-      font-size: 16px;
-      background-color: #0073e6;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #0077cc;
       color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .tabs button:hover {
+      background-color: #005fa3;
+    }
+    .calculator {
+      background-color: white;
+      padding: 30px;
+      margin: 30px auto;
+      border-radius: 15px;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button.calculate {
+      background-color: green;
+      color: white;
+      padding: 10px 20px;
+      font-weight: bold;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
-    .tabs button:hover {
-      background-color: #005bb5;
+    .result {
+      color: #0077cc;
+      font-size: 20px;
+      margin-top: 15px;
     }
-    .calculator {
-      display: none;
-      margin-top: 30px;
-      padding: 20px;
-      background-color: white;
-      border-radius: 10px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-    button.calculate {
-      background-color: #28a745;
-      margin-top: 10px;
-    }
-    p.result {
-      font-size: 18px;
+    .image {
       margin-top: 20px;
-      color: #0073e6;
     }
-    img {
-      max-width: 300px;
+    footer {
       margin-top: 30px;
-    }
-    .footer {
-      margin-top: 50px;
       font-size: 14px;
       color: #888;
     }
@@ -65,82 +69,84 @@
 </head>
 <body>
 
-<h1>Hydrogen Smart Calculator</h1>
+  <h1>Hydrogen Smart Calculator</h1>
 
-<div class="tabs">
-  <button onclick="showCalculator('prod')">Hydrogen Production</button>
-  <button onclick="showCalculator('eff')">Electrolyzer Efficiency</button>
-  <button onclick="showCalculator('cost')">Energy Cost</button>
-</div>
+  <div class="tabs">
+    <button onclick="showTab('production')">Hydrogen Production</button>
+    <button onclick="showTab('efficiency')">Electrolyzer Efficiency</button>
+    <button onclick="showTab('energy')">Energy Efficiency</button>
+  </div>
 
-<!-- Hydrogen Production Calculator -->
-<div id="prod" class="calculator">
-  <h2>Hydrogen Production</h2>
-  <input type="number" id="electricity" placeholder="Electricity (kWh)">
-  <input type="number" id="efficiency1" value="70" placeholder="Efficiency (%)">
-  <button class="calculate" onclick="calculateProduction()">Calculate</button>
-  <p id="result1" class="result"></p>
-</div>
+  <!-- Hydrogen Production -->
+  <div id="production" class="calculator">
+    <h2>Hydrogen Production</h2>
+    <input type="number" id="electricityInput" placeholder="Electricity (kWh)">
+    <input type="number" id="efficiencyInput" placeholder="Efficiency (%)">
+    <button class="calculate" onclick="calculateHydrogen()">Calculate</button>
+    <div class="result" id="hydrogenResult"></div>
+  </div>
 
-<!-- Electrolyzer Efficiency Calculator -->
-<div id="eff" class="calculator">
-  <h2>Electrolyzer Efficiency</h2>
-  <input type="number" id="hydrogenKg" placeholder="Hydrogen produced (kg)">
-  <input type="number" id="electricityUsed" placeholder="Electricity used (kWh)">
-  <button class="calculate" onclick="calculateEfficiency()">Calculate</button>
-  <p id="result2" class="result"></p>
-</div>
+  <!-- Electrolyzer Efficiency -->
+  <div id="efficiency" class="calculator" style="display:none;">
+    <h2>Electrolyzer Efficiency</h2>
+    <input type="number" id="h2Produced" placeholder="Hydrogen produced (kg)">
+    <input type="number" id="electricityUsed" placeholder="Electricity used (kWh)">
+    <button class="calculate" onclick="calculateEfficiency()">Calculate</button>
+    <div class="result" id="efficiencyResult"></div>
+  </div>
 
-<!-- Energy Cost Calculator -->
-<div id="cost" class="calculator">
-  <h2>Energy Cost per kg H₂</h2>
-  <input type="number" id="costPerKwh" placeholder="Cost per kWh (SAR)">
-  <input type="number" id="efficiency3" value="70" placeholder="Efficiency (%)">
-  <button class="calculate" onclick="calculateCost()">Calculate</button>
-  <p id="result3" class="result"></p>
-</div>
+  <!-- Energy Efficiency -->
+  <div id="energy" class="calculator" style="display:none;">
+    <h2>Energy Efficiency</h2>
+    <input type="number" id="energyOutput" placeholder="Useful Energy Output (kWh)">
+    <input type="number" id="energyInput" placeholder="Total Energy Input (kWh)">
+    <button class="calculate" onclick="calculateEnergyEfficiency()">Calculate</button>
+    <div class="result" id="energyEffResult"></div>
+  </div>
 
-<!-- Optional Image -->
-<img src="hydrogen.png.JPG" alt="Hydrogen Electrolyzer Image">
+  <!-- Image -->
+  <div class="image">
+    <img src="hydrogen.png.JPG" alt="Hydrogen Image" width="200">
+  </div>
 
-<div class="footer">by Shroog Taher © 2025</div>
+  <!-- Footer -->
+  <footer>
+    by Shroog Taher © 2025
+  </footer>
 
-<script>
-  function showCalculator(id) {
-    document.querySelectorAll('.calculator').forEach(div => {
-      div.style.display = 'none';
-    });
-    document.getElementById(id).style.display = 'block';
-  }
+  <!-- JS Code -->
+  <script>
+    function showTab(tabId) {
+      document.getElementById('production').style.display = 'none';
+      document.getElementById('efficiency').style.display = 'none';
+      document.getElementById('energy').style.display = 'none';
+      document.getElementById(tabId).style.display = 'block';
+    }
 
-  function calculateProduction() {
-    const electricity = parseFloat(document.getElementById('electricity').value);
-    const efficiency = parseFloat(document.getElementById('efficiency1').value) / 100;
-    if (!electricity || !efficiency) return;
-    const hydrogenKg = (electricity * 3.6) / (efficiency * 33.6);
-    document.getElementById('result1').innerText = `Estimated Hydrogen: ${hydrogenKg.toFixed(3)} kg`;
-  }
+    function calculateHydrogen() {
+      const electricity = parseFloat(document.getElementById('electricityInput').value);
+      const efficiency = parseFloat(document.getElementById('efficiencyInput').value);
+      const hydrogen = (electricity * (efficiency / 100)) / 50;
+      document.getElementById('hydrogenResult').innerText =
+        `Estimated Hydrogen: ${hydrogen.toFixed(3)} kg`;
+    }
 
-  function calculateEfficiency() {
-    const h2 = parseFloat(document.getElementById('hydrogenKg').value);
-    const elec = parseFloat(document.getElementById('electricityUsed').value);
-    if (!h2 || !elec) return;
-    const efficiency = ((h2 * 33.6) / (elec * 3.6)) * 100;
-    document.getElementById('result2').innerText = `Efficiency: ${efficiency.toFixed(2)} %`;
-  }
+    function calculateEfficiency() {
+      const h2 = parseFloat(document.getElementById('h2Produced').value);
+      const electricity = parseFloat(document.getElementById('electricityUsed').value);
+      const efficiency = ((h2 * 3.33) / electricity) * 100;
+      document.getElementById('efficiencyResult').innerText =
+        `Efficiency: ${efficiency.toFixed(2)} %`;
+    }
 
-  function calculateCost() {
-    const cost = parseFloat(document.getElementById('costPerKwh').value);
-    const efficiency = parseFloat(document.getElementById('efficiency3').value) / 100;
-    if (!cost || !efficiency) return;
-    const electricityNeeded = (33.6 / 3.6) / efficiency; // per 1 kg
-    const costPerKg = electricityNeeded * cost;
-    document.getElementById('result3').innerText = `Estimated Cost: ${costPerKg.toFixed(2)} SAR/kg`;
-  }
-
-  // Show default tab
-  showCalculator('prod');
-</script>
+    function calculateEnergyEfficiency() {
+      const output = parseFloat(document.getElementById('energyOutput').value);
+      const input = parseFloat(document.getElementById('energyInput').value);
+      const eff = (output / input) * 100;
+      document.getElementById('energyEffResult').innerText =
+        `Energy Efficiency: ${eff.toFixed(2)} %`;
+    }
+  </script>
 
 </body>
 </html>
