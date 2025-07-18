@@ -87,13 +87,92 @@
   </div>
 
   <!-- Electrolyzer Efficiency -->
-<div id="efficiency" class="calculator" style="display:none;">
-  <h2>Electrolyzer Efficiency</h2>
-  <input type="number" id="h2Produced" placeholder="Hydrogen produced (kg)">
-  <input type="number" id="electricityUsed" placeholder="Electricity used (kWh)">
-  <button class="calculate" onclick="calculateEfficiency()">Calculate</button>
-  <div class="result" id="efficiencyResult"></div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Electrolyzer Efficiency Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f4f4;
+      padding: 30px;
+      text-align: center;
+    }
+    .container {
+      background-color: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Electrolyzer Efficiency Calculator</h2>
+    
+    <input type="number" id="hydrogen" placeholder="Hydrogen Produced (kg)" step="any">
+    <input type="number" id="electricity" placeholder="Electricity Used (kWh)" step="any">
+    
+    <button onclick="calculateEfficiency()">Calculate Efficiency</button>
+    
+    <div id="result"></div>
+    <p class="note">
+      Formula: Efficiency (%) = [(H₂ (kg) × 33.33) ÷ Electricity Used (kWh)] × 100
+    </p>
+  </div>
+
+  <script>
+    function calculateEfficiency() {
+      const hydrogen = parseFloat(document.getElementById("hydrogen").value);
+      const electricity = parseFloat(document.getElementById("electricity").value);
+      
+      if (isNaN(hydrogen) || isNaN(electricity) || electricity === 0) {
+        document.getElementById("result").innerText = "Please enter valid values.";
+        return;
+      }
+
+      const efficiency = ((hydrogen * 33.33) / electricity) * 100;
+      document.getElementById("result").innerText = 
+        "Electrolyzer Efficiency: " + efficiency.toFixed(2) + "%";
+    }
+  </script>
+</body>
+</html>
 
 <script>
   function calculateEfficiency() {
