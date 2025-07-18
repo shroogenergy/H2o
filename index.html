@@ -87,13 +87,28 @@
   </div>
 
   <!-- Electrolyzer Efficiency -->
-  <div id="efficiency" class="calculator" style="display:none;">
-    <h2>Electrolyzer Efficiency</h2>
-    <input type="number" id="h2Produced" placeholder="Hydrogen produced (kg)">
-    <input type="number" id="electricityUsed" placeholder="Electricity used (kWh)">
-    <button class="calculate" onclick="calculateEfficiency()">Calculate</button>
-    <div class="result" id="efficiencyResult"></div>
-  </div>
+<div id="efficiency" class="calculator" style="display:none;">
+  <h2>Electrolyzer Efficiency</h2>
+  <input type="number" id="h2Produced" placeholder="Hydrogen produced (kg)">
+  <input type="number" id="electricityUsed" placeholder="Electricity used (kWh)">
+  <button class="calculate" onclick="calculateEfficiency()">Calculate</button>
+  <div class="result" id="efficiencyResult"></div>
+</div>
+
+<script>
+  function calculateEfficiency() {
+    var h2 = parseFloat(document.getElementById("h2Produced").value);
+    var electricity = parseFloat(document.getElementById("electricityUsed").value);
+
+    if (!isNaN(h2) && !isNaN(electricity) && electricity > 0) {
+      var h2Energy = h2 * 33.33;
+      var efficiency = (h2Energy / electricity) * 100;
+      document.getElementById("efficiencyResult").innerText = "Efficiency: " + efficiency.toFixed(2) + " %";
+    } else {
+      document.getElementById("efficiencyResult").innerText = "Please enter valid values.";
+    }
+  }
+</script>
 
   <!-- Energy Efficiency -->
   <div id="energy" class="calculator" style="display:none;">
